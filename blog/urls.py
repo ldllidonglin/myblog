@@ -13,4 +13,6 @@ urlpatterns=patterns('',url(r'^$',archive),
                         url(r'categorymanage$',categorymanage),
                         url(r'categorymanage/delete/([\u4e00-\u9fa5\w+]+)$',deletecategory),
                         url(r'articlemanage$',articlemanage),
+                        url(r'articlemanage/delete/(\d+)$',deletearticle),
+
 )

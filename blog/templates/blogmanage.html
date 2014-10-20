@@ -5,13 +5,20 @@
      <script src="js/addcategory.js" type="text/javascript"></script>
    </head>
    <body>
-     <div id="tablehead">
-         <a href="/blog/articlemanage">文章管理</a>
-         <a href="/blog/categorymanage">类别管理</a>
-     </div>
-     <div id="managecontentdiv">
-       {%block managecontent %}
-       {%endblock%}
+     <div id="bodyrigion">
+        <div id="tablehead">
+          <div id="manbtndiv">
+            <a href="/blog/articlemanage">文章管理</a>
+            <a href="/blog/categorymanage">类别管理</a>
+          </div>
+          <div id="reblog">
+            <a href="/blog">我的博客</a>
+          </div>
+        </div>
+        <div id="managecontentdiv">
+          {%block managecontent %}
+          {%endblock%}
+        </div>
      </div>
    </body>
 </html>

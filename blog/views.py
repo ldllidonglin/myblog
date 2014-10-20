@@ -74,4 +74,15 @@ def deletecategory(request,index):
     c=Context({'categorys':categorys})
     return HttpResponse(t.render(c))
 
-    
+def deletearticle(request,index):
+    article=BlogTable1.objects.get(id=index)
+    article.delete()
+    category=article.category
+    dcategory=BlogCategory.objects.get(name=category.name)
+    dcategory.num=dcategory.num-1
+    dcategory.save()
+    articles=BlogTable1.objects.all()
+    t=loader.get_template("articlemanage.html")
+    c=Context({'articles':articles})
+    return HttpResponse(t.render(c))
+
