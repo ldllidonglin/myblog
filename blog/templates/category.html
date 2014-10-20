@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+   {%block content %}
+     
+      <table id="bloglist">
+         {%for post in posts %}
+         <tr class="blogtitle"><td align="left"><a href="/blog/{{post.id}}">{{post.title}}</a></td></tr>
+         {%endfor%}
+      </table>
+    {% endblock %}
+    {%block categorydiv%}
+          {%for cate in category %}
+               <div>
+               <li><a href="/blog/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></li>
+               </div>
+          {% endfor %}
+    {% endblock %}
+
+

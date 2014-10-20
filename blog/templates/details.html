@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+   {% block head %}
+    <link rel="stylesheet" type="text/css" href="css/details.css">
+   {%endblock%}
+   {%block content %}
+      <div id="blogcontent">
+         <div id="blogtitle"><h1>{{post.title}}</h1></div>
+         <div id="bloghead">
+            <div id="cat">分类:    <a href="category/{{post.category}}">{{post.category}}</a></div>
+            <div id='time'>{{post.timestamp}}</div>
+            <div id="tag">标签:{{post.tag}}</div>
+         </div>
+         <div id="blogbody">{{post.body}}</div>
+      </div>
+    {% endblock %}
+

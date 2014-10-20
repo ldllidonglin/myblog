@@ -1,0 +1,21 @@
+{% extends "blogmanage.html" %}
+  {%block managecontent %}
+    <table id="artmanagetb">
+      <tr align="left">
+         <th id="mantitletr">类别</th>
+         <th id="manoperator">操作</th>
+      </tr>
+      {%for category in categorys %}
+          <tr class="cagname">
+            <td class="mcagtd"><a href="/blog/category/{{category.name}}">{{category.name}}</a></td>
+            <td class="mcagtd"><a href="/blog/categorymanage/{{category.name}}">编辑 |  </a><a href="/blog/categorymanage/delete/{{category.name}}">删除</a></td>
+         </tr>
+        {% endfor %}
+    </table>
+    <form action="/blog/categorymanage/addcategory" method="post" id="addcategoryform">
+      {% csrf_token %}
+      <input type="text" name="addcagname" />
+      <input type="submit" name="submit" value="添加分类" />
+    </form>
+  {%endblock%}
+

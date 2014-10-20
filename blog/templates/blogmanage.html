@@ -1,0 +1,17 @@
+<html>
+   <head>
+     <title>管理博客</title>
+     <link rel="stylesheet" type="text/css" href="css/manageblog.css">
+     <script src="js/addcategory.js" type="text/javascript"></script>
+   </head>
+   <body>
+     <div id="tablehead">
+         <a href="/blog/articlemanage">文章管理</a>
+         <a href="/blog/categorymanage">类别管理</a>
+     </div>
+     <div id="managecontentdiv">
+       {%block managecontent %}
+       {%endblock%}
+     </div>
+   </body>
+</html>
