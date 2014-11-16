@@ -3,6 +3,13 @@ body{
     padding:0 5em;
     text-align:center;
 }
+#bloglogo{
+    background-image:url("/blog/pic/logo.jpg");
+    width:100px;
+    height:100px;
+    float:left;
+}
+
 #header{
     width:100%;
     height:100px;
@@ -23,11 +30,10 @@ body{
 #main{
     border:solid 1px #ddd;
     border-radius:4px;
-    width:748px;
-    float:right;
     padding:8px;
-    margin:0 auto;
     text-align:left;
+    float:left;
+    width:720px;
 }
 #side{
    border-radius:4px;
@@ -35,6 +41,7 @@ body{
    float:left;
    padding:8px;
    border:solid 1px #ddd;
+   text-align:center;
 }
 #user{
     border:solid 1px #ddd;
@@ -71,7 +78,7 @@ li{
     border:solid 1px #ddd;
 }
 #bcatecountcontent{
-   text-align:left;
+    text-align:left;
 }
 #bcatecounthead{
    padding:5px;
@@ -79,12 +86,11 @@ li{
    border-radius:4px;
    margin:5px;
 }
-#bcatecountcontent li span{
+#bcatecountcontent div span{
    float:right;
    padding:0 5px;
 }
-#bcatecountcontent li a{
-   float:left;
+#bcatecountcontent div a{
    padding: 0 5px;
 }
 

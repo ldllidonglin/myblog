@@ -2,22 +2,18 @@
    <head>
      <title>编辑文章</title>
      <link rel="stylesheet" type="text/css" href="css/editblog.css">
-     <script type="text/javascript" src="js/editblog.js"></script>
-     <script type="text/javascript">
-         window.onload=function (){
-              alert("{{article.category.name}}");
-              SelectCategory("{{article.category.name}}");
-         }
-     </script>
    </head>
    <body>
      <div id="main">
-     <form action="/blog/edit/submitblog/{{article.id}}" method="post" id="blogform">
+        <div id="myblog">
+          <a href="/blog">我的博客</a>
+        </div>
+       <form action="/blog/create/submitblog" method="post" id="blogform">
         {% csrf_token %}
         <div id="blogtitlediv">
            <strong>文章标题</strong>
            <div>
-              <input id="btitleinput" type="text" name="blogtitle" value="{{article.title}}" />
+              <input id="btitleinput" type="text" name="blogtitle">
            </div>
         </div>
         <div id="blogcatediv">
@@ -33,7 +29,7 @@
         <div id="blogcontentdiv">
            <strong>文章内容</strong>
            <div>
-              <textarea  name="blogcontent" rows="45">{{article.body}}</textarea>
+              <textarea  name="blogcontent" rows="45"></textarea>
            </div>
         </div>
         <div id="blogsubmit">
@@ -43,4 +39,3 @@
      </div>
    </body>
 </htmml>
-

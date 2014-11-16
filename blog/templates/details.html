@@ -13,4 +13,12 @@
          <div id="blogbody">{{post.body}}</div>
       </div>
     {% endblock %}
+    {%block categorydiv%}
+           {%for cate in categorys %}
+                <div>
+                <li><a href="/blog/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></li>
+                </div>
+           {% endfor %}
+     {% endblock %}
+
 

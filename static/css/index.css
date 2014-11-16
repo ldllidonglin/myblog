@@ -1,0 +1,16 @@
+#body{
+   text-align:center;
+}
+#head{
+   margin:0 auto;
+   border:solid 1px;
+   line-height:22px;
+   padding:0;
+}
+#loginarea{
+   text-align:right;
+}
+#main{
+   margin:0 auto;
+   text-align:center;
+}

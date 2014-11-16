@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+  <link rel="stylesheet" href="css/index.css" type="text/css">
+  <title>博客</title>
+</head>
+<body>
+     <div id="head">
+         <div id="loginarea">
+             <a href="/blog/gologin">登陆</a>
+             <a href="/blog/goregister">注册</a>
+         </div>
+     </div>
+     <div id="main">
+        <table id="bloglist">
+        {%for blog in blogs%}
+          <tr class="blogtitle"><td align="left"><a href="/blog/article/{{blog.id}}">{{blog.title}}</a></td></tr>
+        {%endfor%}
+        </table>
+     </div>
+</body>
+</html>
+

@@ -7,6 +7,9 @@ body{
     width:960px;
     text-align:left;
 }
+#myblog{
+    text-align:right;
+}
 strong{
 }
 #blogtitlediv{

@@ -1,0 +1,31 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>欢迎登陆</title>  
+</head>  
+<body style="text-align:center;">  
+    <p>用户登陆</p>  
+  
+    {% if errors %}  
+        <li>  
+            {% for error in errors %}  
+             <p style="color: red;">  
+                Please correct the error: {{error}} below.  
+             </p>  
+              {% endfor %}  
+        </li>  
+    {% endif %}  
+    <div id="loginarea" style="text-align:center;"> 
+    <form action="login" method="post" align="center">
+     {%csrf_token %}  
+        <input type = 'text' placeholder="输入用户名" name="Name">  
+       <br>  
+        <input type = 'password' placeholder="输入密码" name="Password">  
+        <br>  
+        <input type = 'submit' placeholder="Login" value="登陆">  
+        <br>  
+        <a href="/blog/goregister">还没有账户，去注册</a>  
+    </form>
+    </div>  
+</body>  
+</html>

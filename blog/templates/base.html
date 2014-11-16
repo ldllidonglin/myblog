@@ -1,33 +1,22 @@
 <html>
     <head>
        <link rel="stylesheet" type="text/css" href="css/base.css">
-       <title>李冬琳</title>
       {% block head %}
       {%endblock %} 
      </head>
      <body>
+          <div id="logo">
+              <a href="/blog" id="bloglogo"></a>
+          </div>
           <div id="header">
-            <h1 style="text-align:center">李冬琳的blog</h1>
-            <h3 style="text-align:center">生命不息，奋斗不止</h3>
+            {%block header%}
+            {%endblock%}
           </div>
           <div id="navigator">
-              <ul class="nav">
-                 <li id="btlist" class='navli'>
-                    <a href="/blog">博客目录</a>
-                 </li>
-                 </li id="btmanage" class='navli'>
-                    <a href="/blog/articlemanage">管理博客</a>
-                 </li>
-                 <li id="btedit" class='navli'>
-                    <a href="/blog/edit">发表新博客</a>
-                 </li>
-               </ul>
+              {%block nav%}
+              {%endblock%}
            </div>
           <div id="body">
-             <div id="main">
-                {%block content %}
-                {%endblock %}
-              </div>
               <div id="side">
                  <div id="user">
                    <div id="sidehead">
@@ -35,20 +24,25 @@
                    </div>
                    <div id="sidebody">
                       <div id="usersurface">
-                         <img src='pic/ldldong.jpg'>
-                      <div>
+                         {%block userinfo%}
+                         {%endblock%}
+                      </div>
                    </div>
                  </div>
                  <div id="bcatecount">
                       <div id="bcatecounthead">
-                      <span>文章分类 <a href="/blog/editcategory">编辑</a></span>
+                     	 <span>文章分类 <a href="/blog/categorymanage">编辑</a></span>
                       </div>
                       <div id="bcatecountcontent">
-                      {% block categorydiv %}
-                      {%endblock%}
+                     	 {% block categorydiv %}
+                     	 {%endblock%}
                       </div>
                  </div>
               </div>
+              <div id="main">
+                {% block content %}
+                {%endblock%}
+             </div>
            </div>
      </body>
 </html>

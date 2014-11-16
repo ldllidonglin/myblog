@@ -91,3 +91,6 @@ STATICFILES_DIRS=(
 TEMPLATE_DIRS=(
      '/home/ldl/mycode/mysite/blog/templates'
 )
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+SESSION_COOKIE_AGE=10
+
