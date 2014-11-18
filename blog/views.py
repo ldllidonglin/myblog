@@ -26,12 +26,10 @@ def register(request):
     password=request.POST['Password'] 
     user=User(name=name,password=password)
     user.save()
-    post=BlogTable1.objects.all()
-    category=BlogCategory.objects.all()
-    categorynum=category.count()
-    t=loader.get_template("bloglist.html")
-    c=RequestContext(request,{'posts':post,'category':category})
-    return HttpResponse(t.render(c))
+    #categorynum=category.count()
+    #t=loader.get_template("bloglist.html")
+    #c=RequestContext(request,{'posts':post,'category':category})
+    return HttpResponseRedirect("/blog/"+str(user.id))
   
    # return render_to_response('register.html', {'errors': errors},context_instance=RequestContext(request)) 
 def homepage(request):
@@ -48,7 +46,7 @@ def goregister(request):
     return render_to_response('register.html',context_instance=RequestContext(request))
 
 
-def archive(request,index):
+def bloglist(request,index):
     post=BlogTable1.objects.filter(userID=index)
     category=BlogCategory.objects.filter(userID=index)
     username=User.objects.get(id=index).name
@@ -118,7 +116,6 @@ def addcategory(request,uid):
     if uid==str(request.session['userID']):
        cate=BlogCategory(name=request.POST['addcagname'],userID=request.session['userID'])
        cate.save()
-      # c=RequestContext(request,{'categorys':categorys,'userID':request.session['userID']})
        return HttpResponseRedirect("/blog/"+uid+"/categorymanage")
 
 def articlemanage(request,index):
@@ -143,10 +140,7 @@ def deletecategory(request,index,string):
     if index==str(request.session['userID']):
        categorys=BlogCategory.objects.get(name=string,userID=index)
        categorys.delete()
-       categorys=BlogCategory.objects.all();
-       t=loader.get_template("categorymanage.html")
-       c=Context({'categorys':categorys,'userID':index})
-       return HttpResponse(t.render(c))
+       return HttpResponseRedirect("/blog/"+index+"/categorymanage")
     else:
        return HttpResponseRedirect("/blog")
 
@@ -158,10 +152,7 @@ def deletearticle(request,uid,index):
        dcategory=BlogCategory.objects.get(name=category.name)
        dcategory.num=dcategory.num-1
        dcategory.save()
-       articles=BlogTable1.objects.all()
-       t=loader.get_template("articlemanage.html")
-       c=Context({'articles':articles})
-       return HttpResponse(t.render(c))
+       return HttpResponseRedirect("/blog/"+uid+"/articlemanage")
     else:
        return HttpResponseRedirect("/blog")
 

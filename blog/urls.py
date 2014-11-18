@@ -2,7 +2,7 @@ from django.conf.urls import *
 from blog.views import *
 from django.conf import settings
 urlpatterns=patterns('',url(r'^$',homepage),
-                        url(r'^(\d+)$',archive),
+                        url(r'^(\d+)$',bloglist),
                         url(r'index$',homepage),
                         url(r'gologin$',gologin),
                         url(r'goregister$',goregister),
