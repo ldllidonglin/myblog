@@ -1,21 +1,21 @@
 {% extends "base.html" %}
    {%block head%}
-     <title>{{username}}的博客</title>
+     <title>{{userName}}的博客</title>
    {%endblock%}
    {%block header%}
-      <h1 style="text-align:center">{{username}}的blog</h1>
+      <h1 style="text-align:center">{{userName}}的blog</h1>
    {%endblock%}
    {%block nav%}
    <ul class="nav">
       <li id='btlist' class='navli'>
-         <a href='/blog'>博客目录</a>
+         <a href='/blog/{{userID}}'>博客目录</a>
       </li>
       {%if logined %}
          <li id='btmanage' class='navli'>
-            <a href='/blog/articlemanage'>管理博客</a>
+            <a href='/blog/{{userID}}/articlemanage'>管理博客</a>
          </li>
          <li id='btedit' class="navli">
-            <a href="/blog/edit">发表新博客</a>
+            <a href="/blog/{{userID}}/edit">发表新博客</a>
          </li>
          </ul>
      {% else%}
@@ -24,17 +24,15 @@
   {%endblock%}
    {%block userinfo%}
        <img src='pic/default.jpg'>
-       <div>{{username}}</div>
+       <div><a href="/blog/{{userID}}">{{userName}}</a></div>
    {%endblock%}
    {%block content %}
-      <table id="bloglist">
       {%for post in posts %}
-         <tr class="blogtitle"><td align="left"><a href="/blog/article/{{post.id}}">{{post.title}}</a></td></tr>
+         <div class="blogtitle"><div align="left"><a href="/blog/{{post.userID}}/article/{{post.id}}">{{post.title}}</a></div></div>
       {% endfor %}
-      </table>
     {% endblock %}
     {%block categorydiv%}
           {%for cate in category %}
-               <div><a href="/blog/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></div>
+               <div><a href="/blog/{{cate.userID}}/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></div>
           {% endfor %}
     {% endblock %}

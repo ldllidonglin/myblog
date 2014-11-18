@@ -1,21 +1,29 @@
 <!DOCTYPE html>
 <head>
   <link rel="stylesheet" href="css/index.css" type="text/css">
-  <title>博客</title>
+  <title>博客首页</title>
 </head>
 <body>
      <div id="head">
+         <div id="logo">
+              <a href="/blog" id="bloglogo"></a>
+         </div>
          <div id="loginarea">
-             <a href="/blog/gologin">登陆</a>
-             <a href="/blog/goregister">注册</a>
+             {%if userName%}
+                <a href="/blog/{{userID}}">{{userName}}</a>
+             {%else%}
+                <a href="/blog/gologin">登陆</a>
+                <a href="/blog/goregister">注册</a>
+             {%endif%}
          </div>
      </div>
      <div id="main">
-        <table id="bloglist">
         {%for blog in blogs%}
-          <tr class="blogtitle"><td align="left"><a href="/blog/article/{{blog.id}}">{{blog.title}}</a></td></tr>
+          <div class="bloglist">
+              <div class="blogtitle"><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
+              <div class="bloginfo"><a href="/blog/{{blog.userID}}" class='username'>{{blog.userName}}</a>发表于{{blog.timestamp|date:"Y-m-d H:i:s"}}</div>
+          </div>
         {%endfor%}
-        </table>
      </div>
 </body>
 </html>

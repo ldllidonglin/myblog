@@ -5,14 +5,13 @@
      <script type="text/javascript" src="js/editblog.js"></script>
      <script type="text/javascript">
          window.onload=function (){
-              alert("{{article.category.name}}");
               SelectCategory("{{article.category.name}}");
          }
      </script>
    </head>
    <body>
      <div id="main">
-     <form action="/blog/edit/submitblog/{{article.id}}" method="post" id="blogform">
+     <form action="/blog/{{userID}}/edit/submitblog/{{article.id}}" method="post" id="blogform">
         {% csrf_token %}
         <div id="blogtitlediv">
            <strong>文章标题</strong>

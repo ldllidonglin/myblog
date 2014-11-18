@@ -7,12 +7,12 @@
       </tr>
       {%for category in categorys %}
           <tr class="cagname">
-            <td class="mcagtd"><a href="/blog/category/{{category.name}}">{{category.name}}</a></td>
-            <td class="mcagtd"><a href="/blog/categorymanage/{{category.name}}">编辑 |  </a><a href="/blog/categorymanage/delete/{{category.name}}">删除</a></td>
+            <td class="mcagtd"><a href="/blog/{{userID}}/category/{{category.name}}">{{category.name}}</a></td>
+            <td class="mcagtd"><a href="/blog/{{userID}}/categorymanage/{{category.name}}">编辑 |  </a><a href="/blog/{{userID}}/categorymanage/delete/{{category.name}}">删除</a></td>
          </tr>
         {% endfor %}
     </table>
-    <form action="/blog/categorymanage/addcategory" method="post" id="addcategoryform">
+    <form action="/blog/{{userID}}/categorymanage/addcategory" method="post" id="addcategoryform">
       {% csrf_token %}
       <input type="text" name="addcagname" />
       <input type="submit" name="submit" value="添加分类" />

@@ -6,9 +6,9 @@
    <body>
      <div id="main">
         <div id="myblog">
-          <a href="/blog">我的博客</a>
+          <a href="/blog/{{userID}}">我的博客</a>
         </div>
-       <form action="/blog/create/submitblog" method="post" id="blogform">
+       <form action="/blog/{{userID}}/create/submitblog" method="post" id="blogform">
         {% csrf_token %}
         <div id="blogtitlediv">
            <strong>文章标题</strong>

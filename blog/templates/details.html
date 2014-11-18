@@ -1,22 +1,30 @@
 {% extends "base.html" %}
    {% block head %}
     <link rel="stylesheet" type="text/css" href="css/details.css">
+    <title>{{userName}}的博客</title>
+   {%endblock%}
+   {%block header%}
+     <h1 style='text-align:center'>{{post.userName}}的blog</h1>
    {%endblock%}
    {%block content %}
       <div id="blogcontent">
          <div id="blogtitle"><h1>{{post.title}}</h1></div>
          <div id="bloghead">
-            <div id="cat">分类:    <a href="category/{{post.category}}">{{post.category}}</a></div>
-            <div id='time'>{{post.timestamp}}</div>
+            <div id="cat">分类:    <a href="/blog/{{post.userID}}/category/{{post.category}}">{{post.category}}</a></div>
+            <div id='time'>{{post.timestamp|date:"Y-m-d H:i:s" }}</div>
             <div id="tag">标签:{{post.tag}}</div>
          </div>
-         <div id="blogbody">{{post.body}}</div>
+         <div id="blogbody">{{post.body|truncatewords:"100"}}</div>
       </div>
     {% endblock %}
+    {%block userinfo%}
+     <img src='pic/default.jpg'>
+     <div><a href="/blog/{{post.userID}}">{{post.userName}}</a></div>
+    {%endblock%}
     {%block categorydiv%}
            {%for cate in categorys %}
                 <div>
-                <li><a href="/blog/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></li>
+                <li><a href="/blog/{{cate.userID}}/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></li>
                 </div>
            {% endfor %}
      {% endblock %}

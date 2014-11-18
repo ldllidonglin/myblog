@@ -23,6 +23,7 @@ class BlogPost(models.Model):
           return self.title
 class BlogTable1(models.Model):
       userID=models.CharField(max_length=10)
+      userName=models.CharField(max_length=30)
       title=models.CharField(max_length=150)
       body=models.TextField()
       category=models.ForeignKey(BlogCategory)

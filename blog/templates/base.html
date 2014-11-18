@@ -10,6 +10,7 @@
           </div>
           <div id="header">
             {%block header%}
+               <h1 style="text-align:center">{{userName}}的blog</h1>
             {%endblock%}
           </div>
           <div id="navigator">
@@ -24,14 +25,14 @@
                    </div>
                    <div id="sidebody">
                       <div id="usersurface">
-                         {%block userinfo%}
-                         {%endblock%}
+                         <img src='pic/default.jpg'>
+                         <div><a href="/blog/{{userID}}">{{userName}}</a></div>
                       </div>
                    </div>
                  </div>
                  <div id="bcatecount">
                       <div id="bcatecounthead">
-                     	 <span>文章分类 <a href="/blog/categorymanage">编辑</a></span>
+                     	 <span>文章分类 <a href="/blog/{{userID}}/categorymanage">编辑</a></span>
                       </div>
                       <div id="bcatecountcontent">
                      	 {% block categorydiv %}

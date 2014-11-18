@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'gkma1p-z#bj$petj5vs@3$)8)gb*g_&v%s#-tr_s65g!5hj+=8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =True
 
 TEMPLATE_DEBUG = True
 
@@ -68,7 +68,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -92,5 +92,5 @@ TEMPLATE_DIRS=(
      '/home/ldl/mycode/mysite/blog/templates'
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
-SESSION_COOKIE_AGE=10
+SESSION_COOKIE_AGE=300000
 

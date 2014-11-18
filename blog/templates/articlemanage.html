@@ -7,8 +7,8 @@
       </tr>
       {%for article in articles %}
           <tr class="blogtitle">
-            <td class="mblogtdt"><a href="/blog/{{article.id}}">{{article.title}}</a></td>
-            <td class="mblogtdo"><a href="/blog/edit/{{article.id}}">编辑 |  </a><a href="/blog/articlemanage/delete/{{article.id}}">删除</a></td>
+            <td class="mblogtdt"><a href="/blog/{{userID}}/article/{{article.id}}">{{article.title}}</a></td>
+            <td class="mblogtdo"><a href="/blog/{{userID}}/edit/{{article.id}}">编辑 |  </a><a href="/blog/{{userID}}/articlemanage/delete/{{article.id}}">删除</a></td>
          </tr>
         {% endfor %}
     </table>
