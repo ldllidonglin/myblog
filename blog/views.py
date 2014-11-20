@@ -7,19 +7,21 @@ from blog.models import BlogPost,BlogTable1, BlogCategory,User
 import datetime
 
 def login(request):
-    if "userID" in request.session:
-        return HttpResponseRedirect('/blog/'+str(request.session['userID']))
-    else: 
-    	username=request.POST['Name']
-        userpassword=request.POST['Password']
-        authuser=User.objects.get(name=username,password=userpassword)
-        cid=authuser.id 
-        if authuser is not None:
-            request.session['userName']=username
-            request.session['userID']=cid 
-            return HttpResponseRedirect('/blog/'+str(cid))
+    username=request.POST['Name']
+    userpassword=request.POST['Password']
+    authuser=User.objects.get(name=username,password=userpassword)
+    cid=authuser.id 
+    if authuser is not None:
+       request.session['userName']=username
+       request.session['userID']=cid 
+       return HttpResponseRedirect('/blog')
 
-
+def logout(request,uid):
+    authuser=User.objects.get(id=uid)
+    if authuser is not None:
+       del request.session["userName"]
+       del request.session["userID"]
+    return HttpResponseRedirect('/blog')
 
 def register(request):  
     name=request.POST['Name']

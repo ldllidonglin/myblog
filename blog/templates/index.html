@@ -14,6 +14,10 @@
          <div id="loginarea">
              {%if userName%}
                 <a id="userlogined" href="/blog/{{userID}}">{{userName}}</a>
+                <div id="logindiv">
+                    <a href="/blog/{{userID}}">我的博客</a><br>
+                    <a href="/blog/{{userID}}/logout">退出</a>
+                </div>
              {%else%}
                 <a href="/blog/gologin">登陆</a>
                 <a href="/blog/goregister">注册</a>
@@ -28,9 +32,6 @@
           </div>
         {%endfor%}
      </div>
-     <div id="logindiv" sytle="width:150px;">
-         <div>cut</div>
-     </div> 
 </body>
 </html>
 

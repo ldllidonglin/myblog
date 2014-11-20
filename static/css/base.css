@@ -1,31 +1,80 @@
 body{
     background-color:rgb(204, 232, 207);
-    padding:0 5em;
     text-align:center;
+    margin:0;
+    height:100%;
+    background-image:url("/blog/pic/background.jpg");
 }
+
+#blogtoolbar{
+    width:100%;
+    height:40px;
+    margin:0px;
+    border:solid 1px;
+    background:#48525e;
+}
+
 #bloglogo{
-    background-image:url("/blog/pic/logo.jpg");
-    width:100px;
-    height:100px;
+    background-image:url("/blog/pic/logoindex.jpg");
+    width:40px;
+    height:40px;
     float:left;
+    margin-left:20px;
+}
+
+#loginarea{
+    float:right;
+    margin-right:20px;
+    text-align:center;
+    padding:10px;
+    z-index:4;
+}
+
+#loginarea a{
+    color:white;
+}
+
+#logindiv{
+    border:solid 1px;
+    display:none;
+    background:white;
+}
+#logindiv a{
+    color:black;
 }
 
 #header{
     width:100%;
     height:100px;
-    text-aligh:center;
-    margin:0 auto;
-    background:#72d0eb;
+}
+
+#header div{
+    padding:30px;
+    text-align:left;
+    font:bold 32px/32px 'Microsoft YaHei'
+}
+
+#header div a{
+    text-align:left;
+    margin-left:20px;
+    text-decoration:none;
 }
 #body{
-    background:#fff;
+    background:green;
     width:960px;
-    margin:0 auto;
+    margin:5px auto;
     text-align:center;
 }
 #navigator{
     padding:5px 0 0 0;
     margin:0 auto;
+    background:white;
+    width:600px;
+    height:60px;
+}
+
+#navigator ul{
+    background:white;
 }
 #main{
     border:solid 1px #ddd;
@@ -33,15 +82,20 @@ body{
     padding:8px;
     text-align:left;
     float:left;
-    width:720px;
+    width:710px;
+    height:700px;
+    background:white;
+    margin-left:10px;
 }
 #side{
    border-radius:4px;
    width:200px;
+   height:700px;
    float:left;
    padding:8px;
    border:solid 1px #ddd;
    text-align:center;
+   background:white;
 }
 #user{
     border:solid 1px #ddd;
