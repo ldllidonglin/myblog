@@ -1,23 +1,6 @@
 {% extends "base.html" %}
-   {%block nav%}
-   <ul class="nav">
-      <li id='btlist' class='navli'>
-         <a href='/blog/{{userID}}'>博客目录</a>
-      </li>
-      {%if logined %}
-         <li id='btmanage' class='navli'>
-            <a href='/blog/{{userID}}/articlemanage'>管理博客</a>
-         </li>
-         <li id='btedit' class="navli">
-            <a href="/blog/{{userID}}/edit">发表新博客</a>
-         </li>
-         </ul>
-     {% else%}
-         </ul>
-     {%endif%}
-  {%endblock%}
    {%block userinfo%}
-       <img src='pic/default.jpg'>
+       <img src='/blog/pic/default.jpg'>
        <div><a href="/blog/{{userID}}">{{userName}}</a></div>
    {%endblock%}
    {%block content %}

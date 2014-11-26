@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+   {%block userinfo%}
+       <img src='/blog/pic/default.jpg'>
+       <div><a href="/blog/{{userID}}">{{userName}}</a></div>
+   {%endblock%}
+   {%block content %}
+      {%for post in posts %}
+         <div class="blogtitle"><div align="left"><a href="/blog/{{post.userID}}/article/{{post.id}}">{{post.title}}</a></div></div>
+         <div >{{post.body|truncatewords:"5" }}</div>
+      {% endfor %}
+    {% endblock %}
+    {%block categorydiv%}
+          {%for cate in category %}
+               <div><a href="/blog/{{cate.userID}}/category/{{cate.name}}">{{cate.name}}</a><span>({{cate.num}})</span></div>
+          {% endfor %}
+    {% endblock %}

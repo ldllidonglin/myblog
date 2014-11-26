@@ -1,37 +1,16 @@
-<!DOCTYPE html>
-<head>
-  <link rel="stylesheet" href="css/index.css" type="text/css">
-  <script src="js/jquery-1.4.1.min.js" type="text/javascript"></script>
-  <script src="js/jquery-1.4.1-vsdoc.js" type="text/javascript"></script>
-  <script src="js/index.js" type="text/javascript"></script>
-  <title>博客首页</title>
-</head>
-<body>
-     <div id="head">
-         <div id="logo">
-              <a href="/blog" id="bloglogo"></a>
-         </div>
-         <div id="loginarea">
-             {%if userName%}
-                <a id="userlogined" href="/blog/{{userID}}">{{userName}}</a>
-                <div id="logindiv">
-                    <a href="/blog/{{userID}}">我的博客</a><br>
-                    <a href="/blog/{{userID}}/logout">退出</a>
-                </div>
-             {%else%}
-                <a href="/blog/gologin">登陆</a>
-                <a href="/blog/goregister">注册</a>
-             {%endif%}
-         </div>
-     </div>
+{% extends "top_toolbar.html" %}
+    {%block head%}
+     <title>博客首页</title>
+    {%endblock%}
+    {%block main%}
      <div id="main">
         {%for blog in blogs%}
           <div class="bloglist">
               <div class="blogtitle"><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
+              <div >{{blog.body|truncatewords:"3"|safe}}</div>
               <div class="bloginfo"><a href="/blog/{{blog.userID}}" class='username'>{{blog.userName}}</a>发表于{{blog.timestamp|date:"Y-m-d H:i:s"}}</div>
           </div>
         {%endfor%}
      </div>
-</body>
-</html>
+    {%endblock%}
 

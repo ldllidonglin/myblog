@@ -1,0 +1,28 @@
+{% extends "blogmanage.html" %}
+    {%block head%}
+     <title>分类管理</title>
+     <link rel="stylesheet" type="text/css" href="/blog/css/manageblog.css">
+     <script src="/blog/js/blogmanage.js" type="text/javascript"></script>
+    {%endblock%}
+  {%block managecontent %}
+    <table id="artmanagetb">
+      <tr>
+         <th id="mantitletr">类别</th>
+         <th id="blognum">文章数</th>
+         <th id="manoperator">操作</th>
+      </tr>
+      {%for category in categorys %}
+          <tr class="cagname">
+            <td class="mcagtd"><a href="/blog/{{userID}}/category/{{category.name}}">{{category.name}}</a></td>
+            <td class="mcagcenter">{{category.num}}</td>
+            <td id="{{category.name}}" class="mcagcenter"><a href="#" onclick="CategoryEdit('{{category.name}}')">编辑 |  </a><a href="/blog/{{userID}}/categorymanage/delete/{{category.name}}">删除</a></td>
+         </tr>
+        {% endfor %}
+    </table>
+    <form action="/blog/{{userID}}/categorymanage/addcategory" method="post" id="addcategoryform">
+      {% csrf_token %}
+      <input type="text" name="addcagname" />
+      <input type="submit" name="submit" value="添加分类" />
+    </form>
+  {%endblock%}
+

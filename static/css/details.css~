@@ -1,0 +1,29 @@
+#blogtitle{
+   padding:5px 12px;
+   text-align:left;
+}
+#bloghead{
+   margin-bottom:20px; 
+}
+
+#cat{
+   float:left;
+   border-radius:8px;
+   margin-right:10px;
+}
+#time{
+   float:left;
+   margin-right:10px;
+}
+#tag{
+   float:left;
+}
+#editlink{
+   float:right;
+}
+
+#blogbody{
+   border:solid 1px #ddd;
+   margin-top:30px;
+}
+

@@ -6,6 +6,10 @@ body{
 #main{
     width:960px;
     text-align:left;
+    margin:0 auto;
+}
+#blogform{
+    width:100%;
 }
 #myblog{
     text-align:right;
@@ -14,6 +18,7 @@ strong{
 }
 #blogtitlediv{
    margin:10px 0;
+   width:100%;
 }
 #blogcatediv{
    margin-bottom:10px;
@@ -34,9 +39,8 @@ strong{
 #blogcontentdiv{
   margin-bottom:10px;
 }
-textarea{
-   width:100%;
-   rows:50;
+#blogconten{
+  display:none;
 }
 #blogsubmitbt{
    float:right;

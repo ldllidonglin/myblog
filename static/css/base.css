@@ -5,6 +5,9 @@ body{
     height:100%;
     background-image:url("/blog/pic/background.jpg");
 }
+body a{
+    text-decoration:none;
+}
 
 #blogtoolbar{
     width:100%;
@@ -69,8 +72,9 @@ body{
     padding:5px 0 0 0;
     margin:0 auto;
     background:white;
-    width:600px;
+    width:960px;
     height:60px;
+    border-radius:4px;
 }
 
 #navigator ul{
@@ -111,9 +115,6 @@ body{
 #bloglist{align:left;border-bottom:1px;padding:10px}
 
 .blogtitle{align:left;padding:5px;color:#bf8;}
-
-#navigator{width:980px;margin:0 auto;}
-
 
 .nav{float:right;} 
 

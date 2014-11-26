@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <head>
+       <link rel="stylesheet" type="text/css" href="/blog/css/index.css">
+       <script src="/blog/js/jquery-1.4.1.min.js" type="text/javascript"></script>
+       <script src="/blog/js/jquery-1.4.1-vsdoc.js" type="text/javascript"></script>
+       <script src="/blog/js/index.js" type="text/javascript"></script>
+       <script src="/blog/js/djangoajax.js" type="text/javascript"></script>
+       {%block head %}
+       {%endblock%}
+     </head>
+     <body>
+     	<div id="head">
+        	<div id="logo">
+             	 	<a href="/blog" id="bloglogo"></a>
+       		</div>	
+        	<div id="loginarea">
+             		{%if logineduser %}
+               	 	<a id="userlogined" href="/blog/{{logineduser.id}}">{{logineduser.name}}</a>
+               	 	<div id="logindiv">
+                   	 <a href="/blog/{{logineduser.id}}">我的博客</a><br>
+                   	 <a href="/blog/{{logineduser.id}}/logout">退出</a>
+               		 </div>
+            		 {%else%}
+              	  		<a href="/blog/gologin">登陆</a>
+               	 		<a href="/blog/goregister">注册</a>
+            		 {%endif%}
+       	 	</div>
+    	 </div>
+     	 {% block main%}
+     	 {%endblock%}
+     	</body>
+</html>

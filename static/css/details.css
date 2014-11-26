@@ -18,9 +18,11 @@
 #tag{
    float:left;
 }
+#editlink{
+   float:right;
+}
 
 #blogbody{
-   border:solid 1px #ddd;
    margin-top:30px;
 }
 

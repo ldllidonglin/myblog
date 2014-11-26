@@ -21,10 +21,8 @@ SECRET_KEY = 'gkma1p-z#bj$petj5vs@3$)8)gb*g_&v%s#-tr_s65g!5hj+=8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
-
 TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'DjangoUeditor',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,0 +1,48 @@
+body{
+    background-color:rgb(204, 232, 207);
+    padding:0 5em;
+    text-align:center;
+}
+#main{
+    width:960px;
+    text-align:left;
+    margin:0 auto;
+}
+#myblog{
+    text-align:right;
+}
+strong{
+}
+#blogtitlediv{
+   margin:10px 0;
+   width:100%;
+}
+#blogcatediv{
+   margin-bottom:10px;
+}
+#blogcateselect{
+  margin-right:10 px;
+}
+.addtext{
+   float:left;
+}
+#addcategory{
+    display:none;
+}
+
+#btitleinput{
+   width:100%;
+}
+#blogcontentdiv{
+  margin-bottom:10px;
+}
+#blogconten{
+  display:none;
+}
+#blogsubmitbt{
+   float:right;
+   background:#428BD1;
+   width:200px;
+   text-align:center;
+   cursor:pointer;
+}

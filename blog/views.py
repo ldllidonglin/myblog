@@ -37,7 +37,9 @@ def register(request):
 def homepage(request):
     blogs=BlogTable1.objects.all()
     if 'userName' in request.session:
-        return render_to_response('index.html',{'blogs':blogs,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
+        loginedname=request.session['userName']
+        logineduser=User.objects.get(name=loginedname)
+        return render_to_response('index.html',{'blogs':blogs,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
     else:
         return render_to_response('index.html',{'blogs':blogs},context_instance=RequestContext(request)) 
 
@@ -55,11 +57,13 @@ def bloglist(request,index):
     categorynum=category.count()
     t=loader.get_template("bloglist.html")
     if 'userID' in request.session:
+        loginedname=request.session['userName']
+        logineduser=User.objects.get(name=loginedname)
         if str(request.session['userID'])==index:
-            c=Context({'posts':post,'userName':username,'userID':request.session['userID'],'category':category,'logined':'true'})
+            c=Context({'posts':post,'userName':username,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
             return HttpResponse(t.render(c))
         else:
-            c=Context({'posts':post,'userName':username,'category':category,'userID':index})
+            c=Context({'posts':post,'userName':username,'category':category,'userID':index,'logineduser':logineduser})
             return HttpResponse(t.render(c))
     else:
         c=Context({'posts':post,'userName':username,'category':category,'userID':index})
@@ -70,8 +74,17 @@ def blogdetail(request,index1,index):
     categorys=BlogCategory.objects.filter(userID=index1)
     if post is not None:
        t=loader.get_template("details.html")
-       c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName})
-       return HttpResponse(t.render(c))
+       if 'userID' in request.session:
+           logineduser=User.objects.get(id=request.session['userID'])
+           if index1==str(request.session['userID']):
+              c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser,'admin':'true'})
+              return HttpResponse(t.render(c))
+           else:
+              c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser})
+              return HttpResponse(t.render(c))
+       else:
+            c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName})
+            return HttpResponse(t.render(c))
     else:
        blogs=BlogTable1.objects.all()
        return render_to_response('index.html',{'blogs':blogs},context_instance=RequestContext(request))
@@ -82,8 +95,17 @@ def blogcategory(request,index,string):
        username=currentuser.name 
        category=BlogCategory.objects.filter(userID=index)
        t=loader.get_template("category.html")
-       c=Context({'posts':post,'category':category,'userName':username,'userID':index})
-       return HttpResponse(t.render(c))
+       if 'userID' in request.session:
+           logineduser=User.objects.get(id=request.session['userID'])
+           if index==str(request.session['userID']):
+               c=Context({'posts':post,'category':category,'userName':username,'userID':index,'admin':'true','logineduser':logineduser})
+               return HttpResponse(t.render(c)) 
+           else:
+               c=Context({'posts':post,'category':category,'userName':username,'userID':index,'logineduser':logineduser})
+               return HttpResponse(t.render(c))
+       else:
+            c=Context({'posts':post,'category':category,'userName':username,'userID':index})
+            return HttpResponse(t.render(c))
 
 def createpage(request,index):
     category=BlogCategory.objects.filter(userID=index)
@@ -122,21 +144,41 @@ def addcategory(request,uid):
 
 def articlemanage(request,index):
     if index==str(request.session['userID']):
+       loginedname=request.session['userName']
+       logineduser=User.objects.get(name=loginedname)
        articles=BlogTable1.objects.filter(userID=request.session['userID'])
        t=loader.get_template("articlemanage.html")
-       c=Context({'articles':articles,'userID':request.session['userID']})
+       c=Context({'articles':articles,'userID':request.session['userID'],'logineduser':logineduser})
        return HttpResponse(t.render(c))
     else:
        return HttpResponseRedirect("/blog")
 
 def categorymanage(request,index):
     if index==str(request.session['userID']):
-       categorys=BlogCategory.objects.filter(userID=request.session['userID']);
+       categorys=BlogCategory.objects.filter(userID=request.session['userID'])
+       logineduser=User.objects.get(id=request.session['userID'])
        t=loader.get_template("categorymanage.html")
-       c=RequestContext(request,{'categorys':categorys,'userID':index})
+       c=RequestContext(request,{'categorys':categorys,'userID':index,'logineduser':logineduser})
        return HttpResponse(t.render(c)) 
     else:
        return HttpResponseRedirect("/blog/"+index)
+
+def categoryedit(request,uid):
+    if uid==str(request.session['userID']):
+       categorys=BlogCategory.objects.filter(userID=uid)
+       oldcategory=BlogCategory.objects.get(name=request.POST['oldname'])
+       oldarticles=BlogTable1.objects.filter(id=uid,category=oldcategory)
+       
+       BlogCategory.objects.filter(name=request.POST['oldname']).update(name=request.POST['newname'])
+       newcategory=BlogCategory.objects.get(name=request.POST['newname'],userID=uid)
+       logineduser=User.objects.get(id=request.session['userID'])
+       oldarticles.update(category=newcategory)
+       t=loader.get_template("categorymanage.html")
+       c=RequestContext(request,{'categorys':categorys,'userID':uid,'logineduser':logineduser})
+       return HttpResponse(t.render(c)) 
+    else:
+       return HttpResponseRedirect("/blog/"+index)
+
 
 def deletecategory(request,index,string):
     if index==str(request.session['userID']):
@@ -161,7 +203,7 @@ def deletearticle(request,uid,index):
 def showeditblogpage(request,uid,index):
     if uid==str(request.session['userID']):
        article=BlogTable1.objects.get(userID=uid,id=index)
-       categorys=BlogCategory.objects.all()
+       categorys=BlogCategory.objects.filter(userID=uid)
        categoryblock=RequestContext(request,{'article':article,'categorys':categorys,'userID':uid})
        t=loader.get_template("editblog.html")
        return HttpResponse(t.render(categoryblock))
@@ -175,18 +217,22 @@ def doeditblog(request,uid,index):
           time=datetime.datetime.now()
           BlogTable1.objects.filter(id=index).update(title=request.POST['blogtitle'],body=request.POST['blogcontent'],timestamp=time)
        else:
-          changeedcag=BlogCategory.objects.get(name=originarticle.category.name)
-          changeedcag.num-=1
-          changeedcag.save()
-          updatecag=BlogCategory.objects.get(name=request.POST['blogcategory'])
-          updatecag.num+=1
-          updatecag.save()
-          time=datetime.datetime.now()
-          BlogTable1.objects.filter(id=index).update(title=request.POST['blogtitle'],body=request.POST['blogcontent'],category=updatecag,timestamp=time)
+          if originarticle.category.name is not None:
+          	changeedcag=BlogCategory.objects.get(name=originarticle.category.name)
+          	changeedcag.num-=1
+         	changeedcag.save()
+         	updatecag=BlogCategory.objects.get(name=request.POST['blogcategory'])
+         	updatecag.num+=1
+         	updatecag.save()
+         	time=datetime.datetime.now()
+         	BlogTable1.objects.filter(id=index).update(title=request.POST['blogtitle'],body=request.POST['blogcontent'],category=updatecag,timestamp=time)
+          else:
+                updatecag=BlogCategory.objects.get(name=request.POST['blogcategory'])
+         	updatecag.num+=1
+         	updatecag.save()
+         	time=datetime.datetime.now()
+         	BlogTable1.objects.filter(id=index).update(title=request.POST['blogtitle'],body=request.POST['blogcontent'],category=updatecag,timestamp=time)
        return HttpResponseRedirect("/blog/"+uid+"/article/"+index)
     else:
         return HttpResponseRedirect("/blog")
-
-     
- 
 
