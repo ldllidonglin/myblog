@@ -87,19 +87,4 @@ body a{
     cursor: pointer;
     border-radius: 2px;
 }
-#blogcontrol strong{
-    border-width: medium;
-    border-style: none;
-    border-color: -moz-use-text-color;
-    padding: 0px 8px;
-    line-height: 24px;
-    margin: 0px 3px;
-    display: inline-block;
-    background: none repeat scroll 0% 0% #07519A;
-    height: 24px;
-    color: #FFF;
-    font-weight: normal;
-    text-decoration: none;
-    border-radius: 2px;
-}
 

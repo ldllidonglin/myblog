@@ -1,3 +1,4 @@
+#coding=utf-8
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_protect
@@ -34,14 +35,67 @@ def register(request):
     return HttpResponseRedirect("/blog/"+str(user.id))
   
    # return render_to_response('register.html', {'errors': errors},context_instance=RequestContext(request)) 
-def homepage(request):
-    blogs=BlogTable1.objects.all()
+def homepage(request,page="1"):
+    page=int(page)
+    grouptag=page%5
+    currentpage=page
+    totalblognum=BlogTable1.objects.all().count()
+    blogrow=totalblognum/10+1
+    pregroup=nextgroup=''
+    if page%5==0:
+       pagedif=(page-1)/5
+    else:
+       pagedif=page/5
+    if page<=(page/5+1)*5 and blogrow>=(pagedif+1)*5+1:
+       if page%5!=0:
+          nextgroup=(page/5+1)*5+1
+       else:
+          nextgroup=page+1;
+    if page>5:
+       pregroup=(page/5-1)*5+1
+    prepage=page-1;
+    nextpage=page+1;
+    i=4
+    blogarray=[]
+    if(blogrow<=5):
+      i=1
+      while i<=blogrow:
+            blogarray.append(i)
+            i=i+1
+    elif grouptag==1:
+      i=0;
+      tag=page;
+      while page+i<=blogrow and i<=4:
+            tag=page+i
+            blogarray.append(tag)
+            i=i+1
+    else:
+      blogarray=[1,2,3,4,5]
+    if page==1:
+       blogs=BlogTable1.objects.all()[0:9]
+    else:
+       startpage=(page-1)*10
+       endpage=(page)*10
+       if BlogTable1.objects.all().count()>startpage:
+          blogs=BlogTable1.objects.all()[startpage:endpage]
+       else:
+          blogs=BlogTable1.objects.all()[0:9]
     if 'userName' in request.session:
         loginedname=request.session['userName']
         logineduser=User.objects.get(name=loginedname)
-        return render_to_response('index.html',{'blogs':blogs,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
+        if page==1:
+           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'nextpage':nextpage,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request))
+        elif page==blogrow:
+            return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
+        else:
+           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'nextpage':nextpage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
     else:
-        return render_to_response('index.html',{'blogs':blogs},context_instance=RequestContext(request)) 
+        if page==1:
+           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'nextpage':nextpage,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
+        elif page==blogrow:
+           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
+        else:
+           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'nextpage':nextpage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
 
 def gologin(request):
     return render_to_response('login.html',context_instance=RequestContext(request))
@@ -110,7 +164,11 @@ def blogcategory(request,index,string):
 def createpage(request,index):
     category=BlogCategory.objects.filter(userID=index)
     currentuser=User.objects.get(id=index)
-    if currentuser is not None:
+    if category.count()==0:
+       cate=BlogCategory(name="未定义",userID=request.session['userID'])
+       cate.save()
+       category=BlogCategory.objects.filter(userID=index) 
+    if currentuser is not None and category is not None:
        categoryblock=RequestContext(request,{'categorys':category,'userID':currentuser.id,'userName':currentuser.name})
        t=loader.get_template("createblog.html")
        return HttpResponse(t.render(categoryblock))
