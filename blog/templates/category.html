@@ -3,11 +3,12 @@
      <title>{{userName}}的博客</title>
    {%endblock%}
    {%block content %}
-      <table id="bloglist">
          {%for post in posts %}
-         <tr class="blogtitle"><td align="left"><a href="/blog/{{post.userID}}/article/{{post.id}}">{{post.title}}</a></td></tr>
+         <div class="bloglist">
+         	<div class="blogtitle"><td align="left"><a href="/blog/{{post.userID}}/article/{{post.id}}">{{post.title}}</a></td></div>
+         	<div class='blogabs'>{{post.body|truncatewords:"5"|safe}}</div>
+         </div>
          {%endfor%}
-      </table>
     {% endblock %}
     {%block categorydiv%}
           {%for cate in category %}

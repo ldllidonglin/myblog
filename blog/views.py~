@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.template import loader,Context,RequestContext
 from django.http import HttpResponse,HttpResponseRedirect
 from blog.models import BlogPost,BlogTable1, BlogCategory,User
-import datetime
+import datetime,math
 
 def login(request):
     username=request.POST['Name']
@@ -37,65 +37,16 @@ def register(request):
    # return render_to_response('register.html', {'errors': errors},context_instance=RequestContext(request)) 
 def homepage(request,page="1"):
     page=int(page)
-    grouptag=page%5
-    currentpage=page
     totalblognum=BlogTable1.objects.all().count()
-    blogrow=totalblognum/10+1
-    pregroup=nextgroup=''
-    if page%5=0:
-       pagedif=(page-1)/5
-    else:
-       pagedif=page/5
-    if page<=(page/5+1)*5 and blogrow>=(pagedif+1)*5+1:
-       if page%5!=0:
-          nextgroup=(page/5+1)*5+1
-       else:
-          nextgroup=page+1;
-    if page>5:
-       pregroup=(page/5-1)*5+1
-    prepage=page-1;
-    nextpage=page+1;
-    i=4
-    blogarray=[]
-    if(blogrow<=5):
-      i=1
-      while i<=blogrow:
-            blogarray.append(i)
-            i=i+1
-    elif grouptag==1:
-      i=0;
-      tag=page;
-      while page+i<=blogrow and i<=4:
-            tag=page+i
-            blogarray.append(tag)
-            i=i+1
-    else:
-      blogarray=[1,2,3,4,5]
-    if page==1:
-       blogs=BlogTable1.objects.all()[0:9]
-    else:
-       startpage=(page-1)*10
-       endpage=(page)*10
-       if BlogTable1.objects.all().count()>startpage:
-          blogs=BlogTable1.objects.all()[startpage:endpage]
-       else:
-          blogs=BlogTable1.objects.all()[0:9]
+    cpage=Page(totalblognum,'10','5',page,'/blog')
+    pagedom=cpage.createdom()
+    blogs=BlogTable1.objects.all()[cpage.startIndex:cpage.endIndex]
     if 'userName' in request.session:
         loginedname=request.session['userName']
         logineduser=User.objects.get(name=loginedname)
-        if page==1:
-           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'nextpage':nextpage,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request))
-        elif page==blogrow:
-            return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
-        else:
-           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'nextpage':nextpage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request)) 
+        return render_to_response('index.html',{'blogs':blogs,'pagedom':pagedom,'logineduser':logineduser,'userName':request.session['userName'],'userID':request.session['userID']},context_instance=RequestContext(request))
     else:
-        if page==1:
-           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'nextpage':nextpage,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
-        elif page==blogrow:
-           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
-        else:
-           return render_to_response('index.html',{'blogs':blogs,'totalnum':totalblognum,'blogrow':blogrow,'currentpage':currentpage,'prepage':prepage,'nextpage':nextpage,'pregroup':pregroup,'nextgroup':nextgroup,'blogarray':blogarray},context_instance=RequestContext(request)) 
+        return render_to_response('index.html',{'blogs':blogs,'pagedom':pagedom},context_instance=RequestContext(request)) 
 
 def gologin(request):
     return render_to_response('login.html',context_instance=RequestContext(request))
@@ -104,8 +55,12 @@ def goregister(request):
     return render_to_response('register.html',context_instance=RequestContext(request))
 
 
-def bloglist(request,index):
-    post=BlogTable1.objects.filter(userID=index)
+def bloglist(request,index,page="1"):
+    totalblognum=BlogTable1.objects.filter(userID=index).count()
+    url='/blog/'+str(index)
+    cpage=Page(totalblognum,'10','5',int(page),url)
+    pagedom=cpage.createdom()
+    bloglists=BlogTable1.objects.filter(userID=index)[cpage.startIndex:cpage.endIndex]
     category=BlogCategory.objects.filter(userID=index)
     username=User.objects.get(id=index).name
     categorynum=category.count()
@@ -114,13 +69,13 @@ def bloglist(request,index):
         loginedname=request.session['userName']
         logineduser=User.objects.get(name=loginedname)
         if str(request.session['userID'])==index:
-            c=Context({'posts':post,'userName':username,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
+            c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
             return HttpResponse(t.render(c))
         else:
-            c=Context({'posts':post,'userName':username,'category':category,'userID':index,'logineduser':logineduser})
+            c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'category':category,'userID':index,'logineduser':logineduser})
             return HttpResponse(t.render(c))
     else:
-        c=Context({'posts':post,'userName':username,'category':category,'userID':index})
+        c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'category':category,'userID':index})
         return HttpResponse(t.render(c))
 
 def blogdetail(request,index1,index):
@@ -143,23 +98,27 @@ def blogdetail(request,index1,index):
        blogs=BlogTable1.objects.all()
        return render_to_response('index.html',{'blogs':blogs},context_instance=RequestContext(request))
 
-def blogcategory(request,index,string):
-       post=BlogTable1.objects.filter(userID=index,category=string)
-       currentuser=User.objects.get(id=index);
-       username=currentuser.name 
-       category=BlogCategory.objects.filter(userID=index)
-       t=loader.get_template("category.html")
-       if 'userID' in request.session:
-           logineduser=User.objects.get(id=request.session['userID'])
-           if index==str(request.session['userID']):
-               c=Context({'posts':post,'category':category,'userName':username,'userID':index,'admin':'true','logineduser':logineduser})
-               return HttpResponse(t.render(c)) 
-           else:
-               c=Context({'posts':post,'category':category,'userName':username,'userID':index,'logineduser':logineduser})
-               return HttpResponse(t.render(c))
-       else:
-            c=Context({'posts':post,'category':category,'userName':username,'userID':index})
+def blogcategory(request,index,string,page='1'):
+    totalblognum=BlogTable1.objects.filter(userID=index,category=string).count()
+    url='/blog/'+str(index)+'/category/'+string
+    cpage=Page(totalblognum,'10','5',int(page),url)
+    pagedom=cpage.createdom()
+    post=BlogTable1.objects.filter(userID=index,category=string)[cpage.startIndex:cpage.endIndex]
+    currentuser=User.objects.get(id=index);
+    username=currentuser.name 
+    category=BlogCategory.objects.filter(userID=index)
+    t=loader.get_template("category.html")
+    if 'userID' in request.session:
+        logineduser=User.objects.get(id=request.session['userID'])
+        if index==str(request.session['userID']):
+            c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index,'admin':'true','logineduser':logineduser})
+            return HttpResponse(t.render(c)) 
+        else:
+            c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index,'logineduser':logineduser})
             return HttpResponse(t.render(c))
+    else:
+         c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index})
+         return HttpResponse(t.render(c))
 
 def createpage(request,index):
     category=BlogCategory.objects.filter(userID=index)
@@ -293,4 +252,85 @@ def doeditblog(request,uid,index):
        return HttpResponseRedirect("/blog/"+uid+"/article/"+index)
     else:
         return HttpResponseRedirect("/blog")
+        
+class Page():
+      startIndex=''
+      endIndex=''
+      totalRow=''
+      onePageRow=''
+      pageNum=''
+      nowPage=''
+      url=''
+      def __init__(self,totalRow,onePageRow,pageNum,nowPage,url):
+	  onePageRow=int(onePageRow)
+	  nowPage=int(nowPage)
+          self.startIndex=(nowPage-1)*onePageRow
+          if nowPage*onePageRow-1>totalRow:
+             self.endIndex=totalRow-1
+          else:
+	     self.endIndex=nowPage*onePageRow-1
+	  self.totalRow=int(totalRow)
+      	  self.onePageRow=int(onePageRow)
+      	  self.pageNum=int(pageNum)
+          self.nowPage=int(nowPage)
+          self.url=url
+      #参数说明：总记录数，每页的记录数，每次最多现实多少页码，当前页
+      def createdom(self):
+	  #计算总页数
+	  totalPages=int(math.ceil(float(self.totalRow)/float(self.onePageRow)))
+	  pageNumArray=[]
+	  i=1;
+	  pageItem=0;
+	  
+	  #页面中要显示的页码如1 2 3 4 5 填充到数组中
+	  while i<=self.pageNum and pageItem<totalPages:
+		pageItem=int((math.ceil(float(self.nowPage)/float(self.pageNum))-1)*self.pageNum+i)
+		pageNumArray.append(pageItem)
+		i=i+1
+	  #根据当前页 计算出其他附属操作如上一页，下一页
+	  prePage=''
+	  if self.nowPage>1:
+	     prePage=self.nowPage-1
+	  preGroup=''
+	  if pageNumArray[0]>1:
+	     preGroup=pageNumArray[0]-self.pageNum
+
+	  nextPage=''
+	  if self.nowPage<totalPages:
+	     nextPage=self.nowPage+1
+
+	  nextGroup=''
+	  pageNum=int(self.pageNum)
+	  if pageNumArray[len(pageNumArray)-1]<totalPages:
+	     nextGroup=pageNumArray[len(pageNumArray)-1]+1
+	    
+	  #得到分页栏的DOM并返回
+	  pageDOM="<h4>总共有"+str(totalPages)+"页"+str(self.totalRow)+"条记录</h4>"
+	  pageDOM+="<div id='pagediv'>"
+	  if prePage:
+	     pageDOM+="<a href='"+self.url+"/page/"+str(prePage)+"'>上一页</a>"
+	  if preGroup:
+	     pageDOM+="<a href='"+self.url+"/page/"+str(preGroup)+"'>...</a>"
+	  for page in pageNumArray:
+	      if self.nowPage==page:
+		 pageDOM+="<strong>"+str(page)+"</strong>"
+	      else:
+		 pageDOM+="<a href='"+self.url+"/page/"+str(page)+"'>"+str(page)+"</a>"
+	  if nextGroup:
+	     pageDOM+="<a href='"+self.url+"/page/"+str(nextGroup)+"'>...</a>"
+          if nextPage:
+             pageDOM+="<a href='"+self.url+"/page/"+str(nextPage)+"'>下一页</a>"
+	  pageDOM+="</div>"
+
+	  return pageDOM
+    
+       
+       
+
+
+
+
+
+    
+    
 

@@ -20,7 +20,7 @@ function PreviousPage(){
     }
     $.ajax({
     	type:'POST',
-    	url:"/blog/page/"+{{currentpage}},
+    	url:"/blog/page/",
    	success:function(data){
    		alert("Data Loaded:成功");
   	},
