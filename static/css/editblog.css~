@@ -8,6 +8,9 @@ body{
     text-align:left;
     margin:0 auto;
 }
+#blogform{
+    width:100%;
+}
 #myblog{
     text-align:right;
 }
@@ -31,7 +34,7 @@ strong{
 }
 
 #btitleinput{
-   width:100%;
+   width:800px;
 }
 #blogcontentdiv{
   margin-bottom:10px;

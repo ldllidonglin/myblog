@@ -4,25 +4,51 @@
 }
 #bloghead{
    margin-bottom:20px; 
+   text-align:right;
 }
-
+#bloghead .editlink{
+   font: bold 12px/30px Arial;
+}
 #cat{
    float:left;
    border-radius:8px;
    margin-right:10px;
 }
-#time{
-   float:left;
-   margin-right:10px;
-}
 #tag{
    float:left;
-}
-#editlink{
-   float:right;
+   border-radius:8px;
+   margin-right:10px;
 }
 
 #blogbody{
    margin-top:30px;
+   font:14px/20px Arial;
 }
-
+.comment_head{
+  clear: both;
+  height: 30px;
+  padding: 0px 5px;
+  background: url("http://static.blog.csdn.net/skin/dark1/images/tit_bg.jpg") repeat-x scroll center top transparent;
+  color: #333;
+  font: bold 12px/30px Arial;
+  text-indent: 5px;
+}
+.comment_content{
+  height: 100px;
+  width:90%;
+}
+.commentsubmitbtn{
+  margin-right:50px;
+  float:right;
+}
+.comment_title{
+  clear: both;
+  background: none repeat scroll 0% 0% #E4E4E4;
+  color: #888;
+  padding: 1px 4px;
+}
+.headitem{
+  color: #999;
+  font: 12px/24px Arial;
+  text-align: right;
+}

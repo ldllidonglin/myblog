@@ -1,0 +1,33 @@
+.bloginfo{
+  text-align:right;
+  float:right;
+}
+.bloglist{
+  border-bottom:1px;
+  margin: 0px 20px;
+  padding: 5px 0px;
+}
+.bloginfo.listview{
+
+}
+
+.blogbody .bloglist{
+   border-bottom: 1px dotted #CCC;
+}
+.blogbody .bloglist .blogabs{
+   color:#333;
+    font:12px/10px "Microsoft YaHei";
+}
+.blogbody .blogtitle.listview{
+   color:black;
+   font:20px/30px "Microsoft YaHei";
+}
+.blogbody .blogtitle a{
+   color:black;
+   font:20px/30px "Microsoft YaHei";
+}
+.headitem{
+color: #999;
+font: 12px/24px Arial;
+text-align: right;
+}

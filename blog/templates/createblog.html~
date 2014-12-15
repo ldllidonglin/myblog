@@ -31,7 +31,7 @@
                 {%for category in categorys%}
                 <option value="{{category.name}}">{{category.name}}</option>
                 {%endfor%}
-             </select><a href="/blog/{{userID}}/categorymanage">分类管理</a>
+             </select>&nbsp &nbsp<a href="/blog/{{userID}}/categorymanage">分类管理</a>
            </div>
         </div>
         <div id="blogcontentdiv">

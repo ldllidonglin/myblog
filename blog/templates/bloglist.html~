@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+   {% block head %}
+          <link rel="stylesheet" type="text/css" href="/blog/css/bloglist.css">
+          <title>{{userName}}的博客</title>
+   {%endblock %} 
    {%block userinfo%}
        <img src='/blog/pic/default.jpg'>
        <div><a href="/blog/{{userID}}">{{userName}}</a></div>
@@ -6,8 +10,21 @@
    {%block content %}
       {%for blog in bloglists %}
          <div class='bloglist'>
-         <div align="left" class='blogtitle'><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
-         <div >{{blog.body|truncatewords:"5"|safe}}</div>
+           {%ifequal "list" viewmode%}
+           <div align="left" class='blogtitle listview'><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
+           <div class='blogabs'>{{blog.body|truncatewords:"5"|safe}}</div>
+           <div class='bloginfo listview'>
+             <span id='time' class='headitem'>{{blog.timestamp|date:"Y-m-d H:i:s" }}</span>
+             <span id='readnum' class='headitem'>阅读:({{blog.readnum}})| </span>
+             <span id='commentnum' class='headitem'>评论:({{blog.commentnum}})</span>
+           </div>
+           {%else%}
+             <a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a>
+             <div class='bloginfo'>
+             <span id='time' class='headitem'>{{blog.timestamp|date:"Y-m-d H:i:s" }}</span>
+             <span id='readnum' class='headitem'>阅读:({{blog.readnum}})| </span>
+             <span id='commentnum' class='headitem'>评论({{blog.commentnum}})</span></div>
+           {%endifequal%}
          </div>
       {% endfor %}
     {% endblock %}

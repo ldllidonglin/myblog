@@ -50,7 +50,7 @@
         <div id="blogcontentdiv">
            <strong>文章内容</strong>
            <div>
-              <script id="editor" name="blogcontent" type="text/plain" style="width:1024px;height:500px;">{{article.body|safe}}</script>
+              <script id="editor" name="blogcontent" type="text/plain" style="width:960px;height:500px;">{{article.body|safe}}</script>
            </div>
         </div>
         <div id="blogsubmit">

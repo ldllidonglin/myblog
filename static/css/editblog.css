@@ -34,7 +34,7 @@ strong{
 }
 
 #btitleinput{
-   width:100%;
+   width:800px;
 }
 #blogcontentdiv{
   margin-bottom:10px;
@@ -44,6 +44,7 @@ strong{
 }
 #blogsubmitbt{
    float:right;
+   margin-right:160px;
    background:#428BD1;
    width:200px;
    text-align:center;

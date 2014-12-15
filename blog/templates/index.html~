@@ -8,7 +8,7 @@
         {%for blog in blogs%}
           <div class="bloglist">
               <div class="blogtitle"><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
-              <div >{{blog.body|truncatewords:"1"|safe}}</div>
+              <div >{{blog.body|truncatewords:"2"|safe}}</div>
               <div class="bloginfo"><a href="/blog/{{blog.userID}}" class='username'>{{blog.userName}}</a>发表于{{blog.timestamp|date:"Y-m-d H:i:s"}}</div>
           </div>
         {%endfor%}

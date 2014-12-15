@@ -8,15 +8,39 @@
          <div id="blogtitle"><h1>{{post.title}}</h1></div>
          <div id="bloghead">
             <div id="cat">分类:    <a href="/blog/{{post.userID}}/category/{{post.category}}">{{post.category}}</a></div>
-            <div id='time'>{{post.timestamp|date:"Y-m-d H:i:s" }}</div>
             <div id="tag">标签:{{post.tag}}</div>
+            <span id='time' class='headitem'>{{post.timestamp|date:"Y-m-d H:i:s" }}</span>
+            <span id='readnum' class='headitem'>阅读:({{post.readnum}})| </span>
+            <span id='commentnum' class='headitem'>评论：({{post.commentnum}})</span>
             {% if admin%}
-            	<a id="editlink" href="/blog/{{post.userID}}/edit/{{post.id}}">编辑</a>
+            	<a class="editlink" href="/blog/{{post.userID}}/edit/{{post.id}}">编辑</a>
             {%endif%}
          </div>
          <div id="blogbody">{{post.body|safe}}</div>
       </div>
+
     {% endblock %}
+    {%block comment%}
+    <div>
+    	<div class='comment_head'>评论</div>
+    	{%for cme in comments%}
+    	   <dl>
+    	   <dt class='comment_title'>{{ forloop.counter }}楼：<a href='/blog/{{cme.uid}}'>{{cme.uname}}</a> 于 {{cme.timestamp|date:"Y-m-d H:i:s"}}发表</dt>
+    	   <dd class=>{{cme.content}}</dd>
+    	   </dl>
+    	{%endfor%}
+    </div>
+    {%csrf_token%}
+    <form method='post' action='/blog/{{post.userID}}/article/{{post.id}}/submit'>
+    {%csrf_token%}
+         <div class='comment_head'>发表评论</div>
+         <textarea class="comment_content" name="comment_content" id="comment_content" ></textarea>
+         <input id="comment_userName" name="comment_userName" value="{{logineduser.name}}" type="hidden">
+         <input id="comment_userId" name="comment_userId" value="{{logineduser.id}}" type="hidden">
+         <input type='submit' value='提交' class='commentsubmitbtn'/>
+
+    </form>
+    {%endblock%}
     {%block userinfo%}
      <img src='/blog/pic/default.jpg'>
      <div><a href="/blog/{{post.userID}}">{{post.userName}}</a></div>

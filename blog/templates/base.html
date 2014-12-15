@@ -35,7 +35,8 @@
               {%block nav%}
               <ul class="nav">
                <li id='btlist' class='navli'>
-                 <a href='/blog/{{userID}}'>博客目录</a>
+                 <a href='/blog/{{userID}}/viewmode/content'>目录视图</a>
+                 <a href='/blog/{{userID}}/viewmode/list'>摘要视图</a>
               </li>
               {%if admin %}
                  <li id='btmanage' class='navli'>
@@ -65,7 +66,7 @@
                  </div>
                  <div id="bcatecount">
                       <div id="bcatecounthead">
-                     	 <span>文章分类 <a href="/blog/{{userID}}/categorymanage">编辑</a></span>
+                     	 <span>文章分类 {%if admin%}<a href="/blog/{{userID}}/categorymanage">编辑</a>{%endif%}</span>
                       </div>
                       <div id="bcatecountcontent">
                      	 {% block categorydiv %}
@@ -79,6 +80,8 @@
                 {%endblock%}
                 </div>
                 <div id='footpage'>{{pagedom|safe}}</div>
+                {% block comment %}
+                {%endblock%}
              </div>
              
            </div>

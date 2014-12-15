@@ -4,8 +4,8 @@ from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_protect
 from django.template import loader,Context,RequestContext
 from django.http import HttpResponse,HttpResponseRedirect
-from blog.models import BlogPost,BlogTable1, BlogCategory,User
-import datetime,math
+from blog.models import BlogPost,BlogTable1, BlogCategory,User,BlogComment
+import datetime,math,hashlib
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -13,12 +13,13 @@ sys.setdefaultencoding('utf-8')
 def login(request):
     username=request.POST['Name']
     userpassword=request.POST['Password']
-    authuser=User.objects.get(name=username,password=userpassword)
+    hashedpassword=hashlib.md5(userpassword.encode('utf-8')).hexdigest()
+    authuser=User.objects.get(name=username,password=hashedpassword)
     cid=authuser.id 
     if authuser is not None:
        request.session['userName']=username
        request.session['userID']=cid 
-       return HttpResponseRedirect('/blog')
+       return HttpResponseRedirect('/blog/'+str(cid))
 
 def logout(request,uid):
     authuser=User.objects.get(id=uid)
@@ -29,8 +30,9 @@ def logout(request,uid):
 
 def register(request):  
     name=request.POST['Name']
-    password=request.POST['Password'] 
-    user=User(name=name,password=password)
+    password=request.POST['Password']
+    hashedpassword=hashlib.md5(password.encode('utf-8')).hexdigest()
+    user=User(name=name,password=hashedpassword)
     user.save()
     #categorynum=category.count()
     #t=loader.get_template("bloglist.html")
@@ -58,69 +60,102 @@ def goregister(request):
     return render_to_response('register.html',context_instance=RequestContext(request))
 
 
-def bloglist(request,index,page="1"):
-    totalblognum=BlogTable1.objects.filter(userID=index).count()
-    url='/blog/'+str(index)
-    cpage=Page(totalblognum,'10','5',int(page),url)
-    pagedom=cpage.createdom()
-    bloglists=BlogTable1.objects.filter(userID=index)[cpage.startIndex:cpage.endIndex]
-    category=BlogCategory.objects.filter(userID=index)
-    username=User.objects.get(id=index).name
-    categorynum=category.count()
-    t=loader.get_template("bloglist.html")
-    if 'userID' in request.session:
-        loginedname=request.session['userName']
-        logineduser=User.objects.get(name=loginedname)
-        if str(request.session['userID'])==index:
-            c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
-            return HttpResponse(t.render(c))
-        else:
-            c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'category':category,'userID':index,'logineduser':logineduser})
-            return HttpResponse(t.render(c))
+def bloglist(request,index='0',page="1",viewmode="content"):
+    if index=='0':
+       return HttpResponseRedirect("/blog/index")
     else:
-        c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'category':category,'userID':index})
+      totalblognum=BlogTable1.objects.filter(userID=index).count()
+      url='/blog/'+str(index)
+      cpage=Page(totalblognum,'10','5',int(page),url)
+      pagedom=cpage.createdom()
+      bloglists=BlogTable1.objects.filter(userID=index)[cpage.startIndex:cpage.endIndex]
+      category=BlogCategory.objects.filter(userID=index)
+      username=User.objects.get(id=index).name
+      categorynum=category.count()
+      t=loader.get_template("bloglist.html")
+      request.session['viewmode']=viewmode
+      if 'userID' in request.session:
+          loginedname=request.session['userName']
+          logineduser=User.objects.get(name=loginedname)
+          if str(request.session['userID'])==index:
+             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
+             return HttpResponse(t.render(c))
+          else:
+             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'category':category,'userID':index,'logineduser':logineduser})
+             return HttpResponse(t.render(c))
+      else:
+        c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'category':category,'userID':index})
         return HttpResponse(t.render(c))
+        
+        
+        
 
 def blogdetail(request,index1,index):
     post=BlogTable1.objects.get(id=index,userID=index1)
     categorys=BlogCategory.objects.filter(userID=index1)
+    blogcomments=BlogComment.objects.filter(bid=index)
     if post is not None:
+       post.readnum=int(post.readnum)+1
+       post.save()
        t=loader.get_template("details.html")
        if 'userID' in request.session:
            logineduser=User.objects.get(id=request.session['userID'])
            if index1==str(request.session['userID']):
-              c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser,'admin':'true'})
-              return HttpResponse(t.render(c))
+              #c=RequstContext(request,{'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser,'admin':'true'})
+              return render_to_response('details.html',{'post':post,'categorys':categorys,'comments':blogcomments,'userID':post.userID,'userName':post.userName,'logineduser':logineduser,'admin':'true'},context_instance=RequestContext(request))
            else:
-              c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser})
-              return HttpResponse(t.render(c))
+              #c=RequestContext(request,{'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName,'logineduser':logineduser})
+              return render_to_response('details.html',{'post':post,'categorys':categorys,'comments':blogcomments,'userID':post.userID,'userName':post.userName,'logineduser':logineduser},context_instance=RequestContext(request))
        else:
-            c=Context({'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName})
+            c=RequestContext(request,{'post':post,'categorys':categorys,'comments':blogcomments,'userID':post.userID,'userName':post.userName})
+            #return render_to_response('details.html',{'post':post,'categorys':categorys,'userID':post.userID,'userName':post.userName},context_instance=RequestContext(request))
             return HttpResponse(t.render(c))
     else:
        blogs=BlogTable1.objects.all()
        return render_to_response('index.html',{'blogs':blogs},context_instance=RequestContext(request))
+       
+       
+       
+def blogcomment(request,uid,bid):
+    if request.method=='POST':
+       blog=BlogTable1.objects.get(id=bid,userID=uid)
+       if blog is not None:
+          articleid=int(bid)
+          blog.commentnum=int(blog.commentnum)+1
+          blog.save()
+          comname=User.objects.get(id=request.POST['comment_userId']).name
+       	  time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+          comment=BlogComment(bid=articleid,uid=request.POST['comment_userId'],uname=request.POST['comment_userName'],timestamp=time,content=request.POST['comment_content'])
+          comment.save()
+          return HttpResponseRedirect("/blog/"+uid+"/"+"article/"+bid)
+       
+    else:
+       return HttpResponseRedirect("/blog")
+       
+       
+       
 
 def blogcategory(request,index,string,page='1'):
     totalblognum=BlogTable1.objects.filter(userID=index,category=string).count()
     url='/blog/'+str(index)+'/category/'+string
     cpage=Page(totalblognum,'10','5',int(page),url)
     pagedom=cpage.createdom()
-    post=BlogTable1.objects.filter(userID=index,category=string)[cpage.startIndex:cpage.endIndex]
+    blogs=BlogTable1.objects.filter(userID=index,category=string)[cpage.startIndex:cpage.endIndex]
     currentuser=User.objects.get(id=index);
     username=currentuser.name 
     category=BlogCategory.objects.filter(userID=index)
     t=loader.get_template("category.html")
+    viewmode=request.session['viewmode']
     if 'userID' in request.session:
         logineduser=User.objects.get(id=request.session['userID'])
         if index==str(request.session['userID']):
-            c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index,'admin':'true','logineduser':logineduser})
+            c=Context({'blogs':blogs,'category':category,'pagedom':pagedom,'viewmode':viewmode,'userName':username,'userID':index,'admin':'true','logineduser':logineduser})
             return HttpResponse(t.render(c)) 
         else:
-            c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index,'logineduser':logineduser})
+            c=Context({'blogs':blogs,'category':category,'pagedom':pagedom,'viewmode':viewmode,'userName':username,'userID':index,'logineduser':logineduser})
             return HttpResponse(t.render(c))
     else:
-         c=Context({'posts':post,'category':category,'pagedom':pagedom,'userName':username,'userID':index})
+         c=Context({'blogs':blogs,'category':category,'pagedom':pagedom,'viewmode':viewmode,'userName':username,'userID':index})
          return HttpResponse(t.render(c))
 
 def createpage(request,index):
@@ -257,21 +292,23 @@ def doeditblog(request,uid,index):
         return HttpResponseRedirect("/blog")
         
 class Page():
-      startIndex=''
-      endIndex=''
-      totalRow=''
-      onePageRow=''
-      pageNum=''
-      nowPage=''
+      startIndex=0
+      endIndex=0
+      totalRow=0
+      onePageRow=10
+      pageNum=5
+      nowPage=1
       url=''
       def __init__(self,totalRow,onePageRow,pageNum,nowPage,url):
 	  onePageRow=int(onePageRow)
 	  nowPage=int(nowPage)
           self.startIndex=(nowPage-1)*onePageRow
           if nowPage*onePageRow-1>totalRow:
-             self.endIndex=totalRow-1
+             self.endIndex=totalRow
           else:
-	     self.endIndex=nowPage*onePageRow-1
+	     self.endIndex=nowPage*onePageRow
+	  if totalRow==0:
+	     self.endIndex=0
 	  self.totalRow=int(totalRow)
       	  self.onePageRow=int(onePageRow)
       	  self.pageNum=int(pageNum)
@@ -281,51 +318,54 @@ class Page():
       def createdom(self):
 	  #计算总页数
 	  totalPages=int(math.ceil(float(self.totalRow)/float(self.onePageRow)))
-	  pageNumArray=[]
-	  i=1;
-	  pageItem=0;
+	  if totalPages>0:
+	  	pageNumArray=[]
+	  	i=1;
+	  	pageItem=0;
 	  
-	  #页面中要显示的页码如1 2 3 4 5 填充到数组中
-	  while i<=self.pageNum and pageItem<totalPages:
-		pageItem=int((math.ceil(float(self.nowPage)/float(self.pageNum))-1)*self.pageNum+i)
-		pageNumArray.append(pageItem)
-		i=i+1
-	  #根据当前页 计算出其他附属操作如上一页，下一页
-	  prePage=''
-	  if self.nowPage>1:
-	     prePage=self.nowPage-1
-	  preGroup=''
-	  if pageNumArray[0]>1:
-	     preGroup=pageNumArray[0]-self.pageNum
+	  	#页面中要显示的页码如1 2 3 4 5 填充到数组中
+	  	while i<=self.pageNum and pageItem<totalPages:
+			pageItem=int((math.ceil(float(self.nowPage)/float(self.pageNum))-1)*self.pageNum+i)
+			pageNumArray.append(pageItem)
+			i=i+1
+	 	 #根据当前页 计算出其他附属操作如上一页，下一页
+	  	prePage=''
+	  	if self.nowPage>1:
+	    	   prePage=self.nowPage-1
+	  	preGroup=''
+	 	if pageNumArray[0]>1:
+	    	   preGroup=pageNumArray[0]-self.pageNum
 
-	  nextPage=''
-	  if self.nowPage<totalPages:
-	     nextPage=self.nowPage+1
+	 	nextPage=''
+	  	if self.nowPage<totalPages:
+	     	   nextPage=self.nowPage+1
 
-	  nextGroup=''
-	  pageNum=int(self.pageNum)
-	  if pageNumArray[len(pageNumArray)-1]<totalPages:
-	     nextGroup=pageNumArray[len(pageNumArray)-1]+1
+	  	nextGroup=''
+	  	pageNum=int(self.pageNum)
+	  	if pageNumArray[len(pageNumArray)-1]<totalPages:
+	     	   nextGroup=pageNumArray[len(pageNumArray)-1]+1
 	    
-	  #得到分页栏的DOM并返回
-	  pageDOM="<h4>总共有"+str(totalPages)+"页"+str(self.totalRow)+"条记录</h4>"
-	  pageDOM+="<div id='pagediv'>"
-	  if prePage:
-	     pageDOM+="<a href='"+self.url+"/page/"+str(prePage)+"'>上一页</a>"
-	  if preGroup:
-	     pageDOM+="<a href='"+self.url+"/page/"+str(preGroup)+"'>...</a>"
-	  for page in pageNumArray:
-	      if self.nowPage==page:
-		 pageDOM+="<strong>"+str(page)+"</strong>"
-	      else:
-		 pageDOM+="<a href='"+self.url+"/page/"+str(page)+"'>"+str(page)+"</a>"
-	  if nextGroup:
-	     pageDOM+="<a href='"+self.url+"/page/"+str(nextGroup)+"'>...</a>"
-          if nextPage:
-             pageDOM+="<a href='"+self.url+"/page/"+str(nextPage)+"'>下一页</a>"
-	  pageDOM+="</div>"
-
-	  return pageDOM
+	  	#得到分页栏的DOM并返回
+	  	pageDOM="<h4>总共有"+str(totalPages)+"页"+str(self.totalRow)+"条记录</h4>"
+	  	pageDOM+="<div id='pagediv'>"
+	  	if prePage:
+	    	   pageDOM+="<a href='"+self.url+"/page/"+str(prePage)+"'>上一页</a>"
+	  	if preGroup:
+	           pageDOM+="<a href='"+self.url+"/page/"+str(preGroup)+"'>...</a>"
+	  	for page in pageNumArray:
+	            if self.nowPage==page:
+		        pageDOM+="<strong>"+str(page)+"</strong>"
+	            else:
+		        pageDOM+="<a href='"+self.url+"/page/"+str(page)+"'>"+str(page)+"</a>"
+	        if nextGroup:
+	           pageDOM+="<a href='"+self.url+"/page/"+str(nextGroup)+"'>...</a>"
+                if nextPage:
+                   pageDOM+="<a href='"+self.url+"/page/"+str(nextPage)+"'>下一页</a>"
+	        pageDOM+="</div>"
+	        return pageDOM
+	  else:
+	       pageDOM=''
+	       return pageDOM
     
        
        

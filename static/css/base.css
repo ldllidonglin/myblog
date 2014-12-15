@@ -92,21 +92,7 @@ body a{
     position:relative;
 }
 .blogbody{
-   margin-bottom:30px;
-}
-.blogbody .bloglist{
-   border-bottom: 1px dotted #CCC;
-}
-.blogbody .bloglist .blogabs{
-   color:#333
-}
-.blogbody .blogtitle{
-   color:black;
-   font:20px/30px "Microsoft YaHei";
-}
-.blogbody .blogtitle a{
-   color:black;
-   font:20px/30px "Microsoft YaHei";
+   margin-bottom:50px;
 }
 #footpage{
    width:100%;
@@ -172,9 +158,7 @@ body a{
    margin:5px;
 }
 
-#bloglist{align:left;border-bottom:1px;padding:10px}
 
-.blogtitle{align:left;padding:5px;color:#bf8;}
 
 .nav{float:right;} 
 
