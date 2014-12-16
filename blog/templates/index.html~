@@ -5,15 +5,33 @@
     {%block main%}
      
      <div id="main">
+        <ul class='blognav'>
+           <li class='blognavitem'><a href='/blog'>首页</a></li>
+           <li class='blognavitem'><a href='/blog/rank'>排行榜</a></li>
+        </ul>
+        <div id='blogcategory'>
+           <div class='blogcategoryitem'>分类1</div>
+           <div class='blogcategoryitem'>分类2</div>
+           <div class='blogcategoryitem'>分类3</div>
+        </div>
+        <div id='blogcontainer'>
         {%for blog in blogs%}
           <div class="bloglist">
               <div class="blogtitle"><a href="/blog/{{blog.userID}}/article/{{blog.id}}">{{blog.title}}</a></div>
-              <div >{{blog.body|truncatewords:"2"|safe}}</div>
-              <div class="bloginfo"><a href="/blog/{{blog.userID}}" class='username'>{{blog.userName}}</a>发表于{{blog.timestamp|date:"Y-m-d H:i:s"}}</div>
+              <div class='blogabs'>{{blog.body|truncatewords:"2"|safe}}</div>
+              <div class="bloginfo">
+              <a href="/blog/{{blog.userID}}" class='username'>{{blog.userName}}</a>
+              <span id='time' class='headitem'>发表于{{blog.timestamp|date:"Y-m-d H:i:s" }}</span>
+              <span id='readnum' class='headitem'> 阅读:({{blog.readnum}}) </span>
+              <span id='commentnum' class='headitem'> 评论:({{blog.commentnum}})</span>
+              </div>
           </div>
         {%endfor%}
+        <div id="blogcontrol">
+        {{pagedom|safe}}
+        </div>
+        </div>
+
      </div>
-     <div id="blogcontrol">
-     {{pagedom|safe}}
-     </div>
+
     {%endblock%}

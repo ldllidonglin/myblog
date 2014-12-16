@@ -34,6 +34,9 @@ class BlogTable1(models.Model):
       commentnum=models.IntegerField(max_length=10,default=0)
       def __unicode__(self):
           return self.title
+      
+      class Meta:
+          ordering = ['-timestamp']
 class BlogComment(models.Model):
       uid=models.CharField(max_length=10)
       uname=models.CharField(max_length=30)

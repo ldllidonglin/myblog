@@ -13,6 +13,7 @@
              <div id="logo">
                 <a href="/blog" id="bloglogo"></a>
              </div>
+             <div>博客平台</div>
              <div id="loginarea">
               {%if logineduser or admin %}
                   <a id="userlogined" href="/blog/{{logineduser.id}}">{{logineduser.name}}</a>

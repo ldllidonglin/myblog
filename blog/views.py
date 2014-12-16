@@ -60,7 +60,7 @@ def goregister(request):
     return render_to_response('register.html',context_instance=RequestContext(request))
 
 
-def bloglist(request,index='0',page="1",viewmode="content"):
+def bloglist(request,index='0',page="1",viewmode="defa"):
     if index=='0':
        return HttpResponseRedirect("/blog/index")
     else:
@@ -73,18 +73,27 @@ def bloglist(request,index='0',page="1",viewmode="content"):
       username=User.objects.get(id=index).name
       categorynum=category.count()
       t=loader.get_template("bloglist.html")
-      request.session['viewmode']=viewmode
+      
+      nowviewmode=''     
+      if viewmode=="defa":
+         nowviewmode='content'
+      if 'viewmode' in request.session:
+         nowviewmode=request.session['viewmode']
+      if viewmode!="defa":
+         nowviewmode=viewmode
+         request.session['viewmode']=viewmode
+        
       if 'userID' in request.session:
           loginedname=request.session['userName']
           logineduser=User.objects.get(name=loginedname)
           if str(request.session['userID'])==index:
-             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
+             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':nowviewmode,'userID':request.session['userID'],'category':category,'admin':'true','logineduser':logineduser})
              return HttpResponse(t.render(c))
           else:
-             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'category':category,'userID':index,'logineduser':logineduser})
+             c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':nowviewmode,'category':category,'userID':index,'logineduser':logineduser})
              return HttpResponse(t.render(c))
       else:
-        c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':viewmode,'category':category,'userID':index})
+        c=Context({'bloglists':bloglists,'pagedom':pagedom,'userName':username,'viewmode':nowviewmode,'category':category,'userID':index})
         return HttpResponse(t.render(c))
         
         
@@ -299,7 +308,8 @@ class Page():
       pageNum=5
       nowPage=1
       url=''
-      def __init__(self,totalRow,onePageRow,pageNum,nowPage,url):
+      viewmode=''
+      def __init__(self,totalRow,onePageRow,pageNum,nowPage,url,viewmode='content'):
 	  onePageRow=int(onePageRow)
 	  nowPage=int(nowPage)
           self.startIndex=(nowPage-1)*onePageRow
@@ -314,6 +324,7 @@ class Page():
       	  self.pageNum=int(pageNum)
           self.nowPage=int(nowPage)
           self.url=url
+          self.viewmode=viewmode
       #参数说明：总记录数，每页的记录数，每次最多现实多少页码，当前页
       def createdom(self):
 	  #计算总页数
@@ -354,7 +365,7 @@ class Page():
 	           pageDOM+="<a href='"+self.url+"/page/"+str(preGroup)+"'>...</a>"
 	  	for page in pageNumArray:
 	            if self.nowPage==page:
-		        pageDOM+="<strong>"+str(page)+"</strong>"
+		        pageDOM+="<strong class='s'>"+str(page)+"</strong>"
 	            else:
 		        pageDOM+="<a href='"+self.url+"/page/"+str(page)+"'>"+str(page)+"</a>"
 	        if nextGroup:
