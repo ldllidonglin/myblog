@@ -1,4 +1,4 @@
-#coding=utf-8
+﻿#coding=utf-8
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_protect
@@ -77,6 +77,7 @@ def bloglist(request,index='0',page="1",viewmode="defa"):
       nowviewmode=''     
       if viewmode=="defa":
          nowviewmode='content'
+	 request.session['viewmode']=viewmode
       if 'viewmode' in request.session:
          nowviewmode=request.session['viewmode']
       if viewmode!="defa":
